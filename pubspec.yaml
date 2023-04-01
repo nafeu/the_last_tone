@@ -1,0 +1,19 @@
+name: the_last_tone
+description: A rougelike musical note matching rpg
+version: 0.0.0
+publish_to: none
+
+environment:
+  sdk: ^2.16.0
+  flutter: ^2.10.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flame: ^1.6.0
+  flame_audio: ^1.0.0-rc.15
+
+flutter:
+  assets:
+    - assets/audio/
+    - assets/images/
