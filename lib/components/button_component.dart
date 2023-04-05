@@ -52,17 +52,21 @@ class ButtonComponent extends Component with TapCallbacks, HasGameRef<TheLastTon
 
   @override
   void onTapDown(TapDownEvent event) {
-    onButtonPress!();
+    if (gameRef.playerState == 'WAITING' && (gameRef.gameState != 'YOU WIN' && gameRef.gameState != 'GAME OVER')) {
+      onButtonPress!();
 
-    FlameAudio.play(Globals.quackSound);
+      FlameAudio.play(Globals.quackSound);
 
-    _isPressed = true;
+      _isPressed = true;
+    }
   }
 
   @override
   void render(Canvas canvas) {
     fill.color = _isPressed? Colors.red : Colors.white;
     canvas.drawRect(shape, fill);
-    textPaint.render(canvas, text, Vector2(x + width / 2, y + height / 2), anchor: Anchor.center);
+    if (gameRef.playerState == 'WAITING') {
+      textPaint.render(canvas, text, Vector2(x + width / 2, y + height / 2), anchor: Anchor.center);
+    }
   }
 }
