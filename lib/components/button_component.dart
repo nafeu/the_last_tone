@@ -4,12 +4,12 @@ import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart' show Canvas, Colors, Paint, Rect, TextStyle;
 import 'package:the_last_tone/constants/globals.dart';
 import 'package:the_last_tone/games/the_last_tone_game.dart';
+import 'package:the_last_tone/utils/helpers.dart';
 
 class ButtonComponent extends Component with TapCallbacks, HasGameRef<TheLastToneGame> {
   late Rect shape;
   final fill = Paint();
   bool _isPressed = false;
-  final Function()? onButtonPress;
 
   final TextPaint textPaint = TextPaint(
     style: TextStyle(
@@ -23,15 +23,19 @@ class ButtonComponent extends Component with TapCallbacks, HasGameRef<TheLastTon
   double y;
   double width;
   double height;
-  String text;
+
+  String option;
+
+  set setOption(String value) {
+    option = value;
+  }
 
   ButtonComponent(
     this.x, 
     this.y, 
     this.width, 
-    this.height, 
-    this.text, 
-    this.onButtonPress
+    this.height,
+    this.option
   );
 
   @override
@@ -52,8 +56,11 @@ class ButtonComponent extends Component with TapCallbacks, HasGameRef<TheLastTon
 
   @override
   void onTapDown(TapDownEvent event) {
-    if (gameRef.playerState == 'WAITING' && (gameRef.gameState != 'YOU WIN' && gameRef.gameState != 'GAME OVER')) {
-      onButtonPress!();
+    if (
+      gameRef.playerState == 'WAITING' 
+        && (gameRef.gameState != 'YOU WIN' && gameRef.gameState != 'GAME OVER')
+    ) {
+      gameRef.handleButtonClick(option);
 
       FlameAudio.play(Globals.quackSound);
 
@@ -65,8 +72,10 @@ class ButtonComponent extends Component with TapCallbacks, HasGameRef<TheLastTon
   void render(Canvas canvas) {
     fill.color = _isPressed? Colors.red : Colors.white;
     canvas.drawRect(shape, fill);
-    if (gameRef.playerState == 'WAITING') {
-      textPaint.render(canvas, text, Vector2(x + width / 2, y + height / 2), anchor: Anchor.center);
+    if (gameRef.enemyState != 'IDLE') {
+      textPaint.render(canvas, '?', Vector2(x + width / 2, y + height / 2), anchor: Anchor.center);
+    } else {
+      textPaint.render(canvas, option, Vector2(x + width / 2, y + height / 2), anchor: Anchor.center);
     }
   }
 }

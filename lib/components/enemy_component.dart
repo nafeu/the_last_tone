@@ -1,6 +1,7 @@
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 import 'package:the_last_tone/games/the_last_tone_game.dart';
+import 'package:the_last_tone/utils/helpers.dart';
 
 class EnemyComponent extends Component with HasGameRef<TheLastToneGame> {
   final paint = Paint();
@@ -24,8 +25,10 @@ class EnemyComponent extends Component with HasGameRef<TheLastToneGame> {
       gameRef.setEnemyStateIn(1, 'WAITING', 'RECOVERING');
     }    
     else if (gameRef.enemyState == 'WAITING') {
+      gameRef.options = getNRandomNotes(4);
+      gameRef.buttonManagerState = 'GENERATE_ANSWERS';
       gameRef.setEnemyStateIn(1, 'PLAYED_MOVE', 'MAKING_MOVE', (){
-        gameRef.enemyMove = (['A', 'B', 'C', 'D'].toList()..shuffle()).first;
+        gameRef.enemyMove = (gameRef.options.toList()..shuffle()).first;
         gameRef.playerState = 'WAITING';
       });
     }
