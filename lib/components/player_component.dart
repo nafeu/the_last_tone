@@ -1,5 +1,7 @@
 import 'package:flame/components.dart';
+import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart';
+import 'package:the_last_tone/constants/globals.dart';
 import 'package:the_last_tone/games/the_last_tone_game.dart';
 
 class PlayerComponent extends Component with HasGameRef<TheLastToneGame> {
@@ -25,6 +27,7 @@ class PlayerComponent extends Component with HasGameRef<TheLastToneGame> {
     }
     else if (gameRef.playerState == 'PLAYED_MOVE') {
       if (gameRef.playerMove == gameRef.enemyMove) {
+        FlameAudio.play(Globals.quackSound);
         gameRef.playerState = 'WAITING';
         gameRef.enemyHealth -= 1;
         if (gameRef.enemyHealth <= 0) {
@@ -33,6 +36,7 @@ class PlayerComponent extends Component with HasGameRef<TheLastToneGame> {
           gameRef.setEnemyStateIn(1, 'HURT', 'HURTING');
         }
       } else {
+        FlameAudio.play(Globals.oofSound);
         gameRef.playerHealth -= 1;
         if (gameRef.playerHealth <= 0) {
           gameRef.setPlayerStateIn(1, 'DEAD', 'DYING');
@@ -65,7 +69,7 @@ class PlayerComponent extends Component with HasGameRef<TheLastToneGame> {
     canvas.drawRect(rect, paint);
     textPaint.render(
       canvas, 
-      'HP: ${gameRef.playerHealth}\nSTATE: ${gameRef.playerState}\nMOVE: ${gameRef.playerMove}', 
+      'HP: ${gameRef.playerHealth}\nSTATE: ${gameRef.playerState}', 
       Vector2(x + width / 2, y + height / 2), 
       anchor: Anchor.center
     );    

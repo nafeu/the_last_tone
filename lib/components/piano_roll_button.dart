@@ -6,14 +6,22 @@ import 'package:the_last_tone/constants/globals.dart';
 import 'package:the_last_tone/games/the_last_tone_game.dart';
 import 'package:the_last_tone/utils/helpers.dart';
 
-class ButtonComponent extends Component with TapCallbacks, HasGameRef<TheLastToneGame> {
+class PianoRollButtonComponent extends Component with TapCallbacks, HasGameRef<TheLastToneGame> {
   late Rect shape;
   final fill = Paint();
   bool _isPressed = false;
 
-  final TextPaint textPaint = TextPaint(
+  final TextPaint whiteTextPaint = TextPaint(
     style: TextStyle(
-      fontSize: 48.0,
+      fontSize: 24.0,
+      fontFamily: 'Awesome Font',
+      color: Colors.white
+    ),
+  );
+
+  final TextPaint blackTextPaint = TextPaint(
+    style: TextStyle(
+      fontSize: 24.0,
       fontFamily: 'Awesome Font',
       color: Colors.black
     ),
@@ -30,10 +38,10 @@ class ButtonComponent extends Component with TapCallbacks, HasGameRef<TheLastTon
     option = value;
   }
 
-  ButtonComponent(
-    this.x, 
-    this.y, 
-    this.width, 
+  PianoRollButtonComponent(
+    this.x,
+    this.y,
+    this.width,
     this.height,
     this.option
   );
@@ -41,7 +49,7 @@ class ButtonComponent extends Component with TapCallbacks, HasGameRef<TheLastTon
   @override
   Future<void> onLoad() async {
     await super.onLoad();
-    
+
     shape = Rect.fromLTWH(x, y, width, height);
   }
 
@@ -57,10 +65,10 @@ class ButtonComponent extends Component with TapCallbacks, HasGameRef<TheLastTon
   @override
   void onTapDown(TapDownEvent event) {
     if (
-      gameRef.playerState == 'WAITING' 
+      gameRef.playerState == 'WAITING'
         && (gameRef.gameState != 'YOU WIN' && gameRef.gameState != 'GAME OVER')
     ) {
-      gameRef.handleButtonClick(option);
+      FlameAudio.play(Globals.pianoNoteMapping[option]!);
 
       _isPressed = true;
     }
@@ -68,12 +76,25 @@ class ButtonComponent extends Component with TapCallbacks, HasGameRef<TheLastTon
 
   @override
   void render(Canvas canvas) {
-    fill.color = _isPressed? Colors.red : Colors.white;
+    bool isBlackKey = option.contains('#');
+
+    fill.color = _isPressed? Colors.blue : (isBlackKey ? Colors.black : Colors.white);
     canvas.drawRect(shape, fill);
-    if (gameRef.enemyState != 'IDLE') {
-      textPaint.render(canvas, '?', Vector2(x + width / 2, y + height / 2), anchor: Anchor.center);
+
+    if (isBlackKey) {
+      whiteTextPaint.render(
+        canvas,
+        option,
+        Vector2(x + width / 2, y + height / 2),
+        anchor: Anchor.center
+      );
     } else {
-      textPaint.render(canvas, option, Vector2(x + width / 2, y + height / 2), anchor: Anchor.center);
+      blackTextPaint.render(
+        canvas,
+        option,
+        Vector2(x + width / 2, y + height / 2),
+        anchor: Anchor.center
+      );
     }
   }
 }

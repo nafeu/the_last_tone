@@ -10,6 +10,8 @@ import 'package:the_last_tone/components/player_component.dart';
 import 'package:the_last_tone/constants/globals.dart';
 import 'package:the_last_tone/utils/helpers.dart';
 
+import '../components/piano_roll_button_manager_component.dart';
+
 class TheLastToneGame extends FlameGame with HasTappableComponents {
   String gameState = 'ACTIVE';
   Timer gameStateTimer = Timer(Duration(seconds: 0), (){});
@@ -27,8 +29,11 @@ class TheLastToneGame extends FlameGame with HasTappableComponents {
   String buttonManagerState = 'EMPTY';
   Timer buttonManagerStateTimer = Timer(Duration(seconds: 0), (){});
 
+  String pianoRollButtonManagerState = 'EMPTY';
+  Timer pianoRollButtonManagerStateTimer = Timer(Duration(seconds: 0), (){});
+
   List<String> options = ['?', '?', '?', '?'];
-  
+
   void handleButtonClick(String text) {
     playerMove = text;
     playerState = 'PLAYED_MOVE';
@@ -49,7 +54,7 @@ class TheLastToneGame extends FlameGame with HasTappableComponents {
     gameStateTimer.cancel();
     gameStateTimer = Timer(
       Duration(seconds: seconds),
-      () { 
+      () {
         print('GAME STATE FROM [$gameState] -> [$newState]');
         gameState = newState;
       }
@@ -57,8 +62,8 @@ class TheLastToneGame extends FlameGame with HasTappableComponents {
   }
 
   void setPlayerStateIn(
-    int seconds, 
-    String newState, 
+    int seconds,
+    String newState,
     String transitionState,
     [Function? callback]
   ) {
@@ -66,27 +71,27 @@ class TheLastToneGame extends FlameGame with HasTappableComponents {
     playerStateTimer.cancel();
     playerStateTimer = Timer(
       Duration(seconds: seconds),
-      () { 
+      () {
         print('PLAYER STATE FROM [$playerState] -> [$newState]');
-        playerState = newState; 
+        playerState = newState;
         if (callback != null) {
           callback();
-        }        
+        }
       }
     );
   }
 
   void setEnemyStateIn(
-    int seconds, 
-    String newState, 
-    String transitionState, 
+    int seconds,
+    String newState,
+    String transitionState,
     [Function? callback]
   ) {
     enemyState = transitionState;
     enemyStateTimer.cancel();
     enemyStateTimer = Timer(
       Duration(seconds: seconds),
-      () { 
+      () {
         print('ENEMY STATE FROM [$enemyState] -> [$newState]');
         enemyState = newState;
         if (callback != null) {
@@ -97,18 +102,38 @@ class TheLastToneGame extends FlameGame with HasTappableComponents {
   }
 
   void setButtonManagerStateIn(
-    int seconds, 
-    String newState, 
-    String transitionState, 
+    int seconds,
+    String newState,
+    String transitionState,
     [Function? callback]
   ) {
     buttonManagerState = transitionState;
     buttonManagerStateTimer.cancel();
     buttonManagerStateTimer = Timer(
       Duration(seconds: seconds),
-      () { 
+      () {
         print('BUTTON MANAGER STATE FROM [$buttonManagerState] -> [$newState]');
         buttonManagerState = newState;
+        if (callback != null) {
+          callback();
+        }
+      }
+    );
+  }
+
+  void setPianoRollButtonManagerStateIn(
+    int seconds,
+    String newState,
+    String transitionState,
+    [Function? callback]
+  ) {
+    pianoRollButtonManagerState = transitionState;
+    pianoRollButtonManagerStateTimer.cancel();
+    pianoRollButtonManagerStateTimer = Timer(
+      Duration(seconds: seconds),
+      () {
+        print('BUTTON MANAGER STATE FROM [$pianoRollButtonManagerState] -> [$newState]');
+        pianoRollButtonManagerState = newState;
         if (callback != null) {
           callback();
         }
@@ -120,12 +145,15 @@ class TheLastToneGame extends FlameGame with HasTappableComponents {
   Future<void> onLoad() async {
     await super.onLoad();
     await FlameAudio.audioCache.load(Globals.quackSound);
+    await FlameAudio.audioCache.load(Globals.oofSound);
+    await FlameAudio.audioCache.loadAll(Globals.pianoSounds);
 
     add(BackgroundComponent());
     add(GameStatusComponent());
     add(PlayerComponent());
     add(EnemyComponent());
     add(ButtonManagerComponent());
+    add(PianoRollButtonManagerComponent());
   }
 
   @override
