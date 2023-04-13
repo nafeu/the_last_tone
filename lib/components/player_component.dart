@@ -43,7 +43,7 @@ class PlayerComponent extends Component with HasGameRef<TheLastToneGame> {
         } else {
           gameRef.setPlayerStateIn(1, 'HURT', 'HURTING');
           gameRef.enemyState = 'WAITING';
-        }        
+        }
       }
 
       gameRef.playerMove = 'P';
@@ -68,11 +68,11 @@ class PlayerComponent extends Component with HasGameRef<TheLastToneGame> {
     paint.color = Colors.green;
     canvas.drawRect(rect, paint);
     textPaint.render(
-      canvas, 
-      'HP: ${gameRef.playerHealth}\nSTATE: ${gameRef.playerState}', 
-      Vector2(x + width / 2, y + height / 2), 
+      canvas,
+      'HP: ${gameRef.playerHealth}\nSTATE: ${gameRef.playerState}\nENERGY: ${gameRef.playerEnergy}',
+      Vector2(x + width / 2, y + height / 2),
       anchor: Anchor.center
-    );    
+    );
   }
 
   @override

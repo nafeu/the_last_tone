@@ -8,7 +8,6 @@ import 'package:the_last_tone/components/enemy_component.dart';
 import 'package:the_last_tone/components/game_status_component.dart';
 import 'package:the_last_tone/components/player_component.dart';
 import 'package:the_last_tone/constants/globals.dart';
-import 'package:the_last_tone/utils/helpers.dart';
 
 import '../components/piano_roll_button_manager_component.dart';
 
@@ -20,6 +19,7 @@ class TheLastToneGame extends FlameGame with HasTappableComponents {
   Timer playerStateTimer = Timer(Duration(seconds: 0), (){});
   String playerMove = '';
   int playerHealth = 3;
+  int playerEnergy = 3;
 
   String enemyState = 'WAITING';
   Timer enemyStateTimer = Timer(Duration(seconds: 0), (){});
@@ -29,7 +29,7 @@ class TheLastToneGame extends FlameGame with HasTappableComponents {
   String buttonManagerState = 'EMPTY';
   Timer buttonManagerStateTimer = Timer(Duration(seconds: 0), (){});
 
-  String pianoRollButtonManagerState = 'EMPTY';
+  String pianoRollButtonManagerState = 'ACTIVATE_RANDOM_BUTTON';
   Timer pianoRollButtonManagerStateTimer = Timer(Duration(seconds: 0), (){});
 
   List<String> options = ['?', '?', '?', '?'];

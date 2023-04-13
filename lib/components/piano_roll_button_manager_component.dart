@@ -1,12 +1,14 @@
 import 'package:flame/components.dart';
-import 'package:the_last_tone/components/piano_roll_button.dart';
+import 'package:the_last_tone/components/piano_roll_button_component.dart';
 import 'package:the_last_tone/constants/globals.dart';
 import 'package:the_last_tone/games/the_last_tone_game.dart';
+import 'package:the_last_tone/utils/helpers.dart';
 
 class PianoRollButtonManagerComponent extends Component with HasGameRef<TheLastToneGame> {
   PianoRollButtonManagerComponent();
 
   late List<Component> buttons;
+  List<bool> activatedButtons = List.generate(Globals.musicalNotes.length, (_) => false);
 
   double buttonWidth = 35;
   double buttonHeight = 100;
@@ -15,18 +17,20 @@ class PianoRollButtonManagerComponent extends Component with HasGameRef<TheLastT
   late double xOffset;
   late double yOffset;
 
-  void updateButtonOptions() {
-    // for (var i = 0; i < buttons.length; i++) {
-    //   PianoRollButtonComponent button = buttons[i] as PianoRollButtonComponent;
+  void activateRandomButton() {
+    setNUniqueTrue(activatedButtons, 3);
 
-    //   button.setOption = gameRef.options[i];
-    // }
+    for (var i = 0; i < buttons.length; i++) {
+      PianoRollButtonComponent button = buttons[i] as PianoRollButtonComponent;
+
+      button.setIsActive = activatedButtons[i];
+    }
   }
 
   void updatePianoRollButtonManagerState() {
-    if (gameRef.pianoRollButtonManagerState == 'GENERATE_ANSWERS') {
-      // updateButtonOptions();
-      gameRef.setPianoRollButtonManagerStateIn(1, 'WAITING', 'SHUFFLING');
+    if (gameRef.pianoRollButtonManagerState == 'ACTIVATE_RANDOM_BUTTON') {
+      activateRandomButton();
+      gameRef.setPianoRollButtonManagerStateIn(1, 'ACTIVATING', 'IDLE');
     }
   }
 
@@ -45,7 +49,8 @@ class PianoRollButtonManagerComponent extends Component with HasGameRef<TheLastT
           yOffset + buttonHeight - (isBlackKey ? blackKeyYOffset : 0),
           buttonWidth,
           buttonHeight,
-          option
+          option,
+          activatedButtons[index]
         )
       );
     }

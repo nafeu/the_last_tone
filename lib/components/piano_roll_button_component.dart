@@ -10,6 +10,7 @@ class PianoRollButtonComponent extends Component with TapCallbacks, HasGameRef<T
   late Rect shape;
   final fill = Paint();
   bool _isPressed = false;
+  bool isActive = false;
 
   final TextPaint whiteTextPaint = TextPaint(
     style: TextStyle(
@@ -38,12 +39,17 @@ class PianoRollButtonComponent extends Component with TapCallbacks, HasGameRef<T
     option = value;
   }
 
+  set setIsActive(bool value) {
+    isActive = value;
+  }
+
   PianoRollButtonComponent(
     this.x,
     this.y,
     this.width,
     this.height,
-    this.option
+    this.option,
+    this.isActive
   );
 
   @override
@@ -68,7 +74,10 @@ class PianoRollButtonComponent extends Component with TapCallbacks, HasGameRef<T
       gameRef.playerState == 'WAITING'
         && (gameRef.gameState != 'YOU WIN' && gameRef.gameState != 'GAME OVER')
     ) {
-      FlameAudio.play(Globals.pianoNoteMapping[option]!);
+      if (isActive && gameRef.playerEnergy > 0) {
+        FlameAudio.play(Globals.pianoNoteMapping[option]!);
+        gameRef.playerEnergy -= 1;
+      }
 
       _isPressed = true;
     }
@@ -78,23 +87,33 @@ class PianoRollButtonComponent extends Component with TapCallbacks, HasGameRef<T
   void render(Canvas canvas) {
     bool isBlackKey = option.contains('#');
 
-    fill.color = _isPressed? Colors.blue : (isBlackKey ? Colors.black : Colors.white);
-    canvas.drawRect(shape, fill);
+    if (isActive) {
+      if (gameRef.playerEnergy == 0) {
+        fill.color = Colors.grey;
+      } else {
+        fill.color = _isPressed? Colors.yellow : (isBlackKey ? Colors.black : Colors.white);
+      }
 
-    if (isBlackKey) {
-      whiteTextPaint.render(
-        canvas,
-        option,
-        Vector2(x + width / 2, y + height / 2),
-        anchor: Anchor.center
-      );
+      canvas.drawRect(shape, fill);
+
+      if (isBlackKey) {
+        whiteTextPaint.render(
+          canvas,
+          option,
+          Vector2(x + width / 2, y + height / 2),
+          anchor: Anchor.center
+        );
+      } else {
+        blackTextPaint.render(
+          canvas,
+          option,
+          Vector2(x + width / 2, y + height / 2),
+          anchor: Anchor.center
+        );
+      }
     } else {
-      blackTextPaint.render(
-        canvas,
-        option,
-        Vector2(x + width / 2, y + height / 2),
-        anchor: Anchor.center
-      );
+      fill.color = Colors.blue.shade600;
+      canvas.drawRect(shape, fill);
     }
   }
 }

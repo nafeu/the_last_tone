@@ -28,7 +28,7 @@ class EnemyComponent extends Component with TapCallbacks, HasGameRef<TheLastTone
   void updateEnemyState() {
     if (gameRef.enemyState == 'HURT') {
       gameRef.setEnemyStateIn(1, 'WAITING', 'RECOVERING');
-    }    
+    }
     else if (gameRef.enemyState == 'WAITING') {
       gameRef.options = getNRandomNotes(4);
       gameRef.buttonManagerState = 'GENERATE_ANSWERS';
@@ -61,19 +61,19 @@ class EnemyComponent extends Component with TapCallbacks, HasGameRef<TheLastTone
     paint.color = Colors.red;
     canvas.drawRect(rect, paint);
     textPaint.render(
-      canvas, 
-      'HP: ${gameRef.enemyHealth}\nSTATE: ${gameRef.enemyState}', 
-      Vector2(x + width / 2, y + height / 2), 
+      canvas,
+      'HP: ${gameRef.enemyHealth}\nSTATE: ${gameRef.enemyState}',
+      Vector2(x + width / 2, y + height / 2),
       anchor: Anchor.center
-    );        
-  }  
+    );
+  }
 
   @override
   void update(double dt) {
     super.update(dt);
     if (gameRef.gameState != 'GAME OVER' && gameRef.gameState != 'YOU WIN') {
       updateEnemyState();
-    }    
+    }
   }
 
   @override
@@ -88,12 +88,15 @@ class EnemyComponent extends Component with TapCallbacks, HasGameRef<TheLastTone
   @override
   void onTapDown(TapDownEvent event) {
     if (
-      gameRef.enemyState == 'IDLE' 
+      gameRef.enemyState == 'IDLE'
         && (gameRef.gameState != 'YOU WIN' && gameRef.gameState != 'GAME OVER')
     ) {
-      FlameAudio.play(Globals.pianoNoteMapping[gameRef.enemyMove]!);
+      if (gameRef.playerEnergy > 0) {
+        FlameAudio.play(Globals.pianoNoteMapping[gameRef.enemyMove]!);
+        gameRef.playerEnergy -= 1;
+      }
 
       _isPressed = true;
     }
-  }  
+  }
 }

@@ -28,3 +28,19 @@ String getRandomLetter() {
   final charCode = random.nextInt(26) + 65; // ASCII code for 'A' is 65
   return String.fromCharCode(charCode);
 }
+
+void setNUniqueTrue(List<bool> boolList, int n) {
+  final random = Random();
+  final indices = List.generate(boolList.length, (index) => index);
+  indices.shuffle(random);
+
+  for (final index in indices) {
+    if (!boolList[index]) {
+      boolList[index] = true;
+      n--;
+      if (n == 0) {
+        break;
+      }
+    }
+  }
+}
