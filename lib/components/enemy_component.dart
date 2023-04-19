@@ -3,6 +3,7 @@ import 'package:flame/experimental.dart';
 import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart';
 import 'package:the_last_tone/constants/globals.dart';
+import 'package:the_last_tone/constants/states.dart';
 import 'package:the_last_tone/games/the_last_tone_game.dart';
 import 'package:the_last_tone/utils/helpers.dart';
 
@@ -26,20 +27,20 @@ class EnemyComponent extends Component with TapCallbacks, HasGameRef<TheLastTone
   );
 
   void updateEnemyState() {
-    if (gameRef.enemyState == 'HURT') {
-      gameRef.setEnemyStateIn(1, 'WAITING', 'RECOVERING');
+    if (gameRef.enemyState == EnemyState.HURT) {
+      gameRef.setEnemyStateIn(1, EnemyState.WAITING, EnemyState.RECOVERING);
     }
-    else if (gameRef.enemyState == 'WAITING') {
+    else if (gameRef.enemyState == EnemyState.WAITING) {
       gameRef.options = getNRandomNotes(4);
-      gameRef.buttonManagerState = 'GENERATE_ANSWERS';
-      gameRef.setEnemyStateIn(1, 'PLAYED_MOVE', 'MAKING_MOVE', (){
+      gameRef.buttonManagerState = ButtonManagerState.GENERATE_ANSWERS;
+      gameRef.setEnemyStateIn(1, EnemyState.PLAYED_MOVE, EnemyState.MAKING_MOVE, (){
         gameRef.enemyMove = (gameRef.options.toList()..shuffle()).first;
         FlameAudio.play(Globals.pianoNoteMapping[gameRef.enemyMove]!);
-        gameRef.playerState = 'WAITING';
+        gameRef.playerState = PlayerState.WAITING;
       });
     }
-    else if (gameRef.enemyState == 'PLAYED_MOVE') {
-      gameRef.setEnemyStateIn(1, 'IDLE', 'RESETTING');
+    else if (gameRef.enemyState == EnemyState.PLAYED_MOVE) {
+      gameRef.setEnemyStateIn(1, EnemyState.IDLE, EnemyState.RESETTING);
     }
   }
 
@@ -62,7 +63,7 @@ class EnemyComponent extends Component with TapCallbacks, HasGameRef<TheLastTone
     canvas.drawRect(rect, paint);
     textPaint.render(
       canvas,
-      'HP: ${gameRef.enemyHealth}\nSTATE: ${gameRef.enemyState}',
+      '${gameRef.enemyState}\nHP: ${gameRef.enemyHealth}',
       Vector2(x + width / 2, y + height / 2),
       anchor: Anchor.center
     );
@@ -71,7 +72,7 @@ class EnemyComponent extends Component with TapCallbacks, HasGameRef<TheLastTone
   @override
   void update(double dt) {
     super.update(dt);
-    if (gameRef.gameState != 'GAME OVER' && gameRef.gameState != 'YOU WIN') {
+    if (gameRef.gameState != GameState.GAME_OVER && gameRef.gameState != GameState.YOU_WIN) {
       updateEnemyState();
     }
   }
@@ -88,8 +89,8 @@ class EnemyComponent extends Component with TapCallbacks, HasGameRef<TheLastTone
   @override
   void onTapDown(TapDownEvent event) {
     if (
-      gameRef.enemyState == 'IDLE'
-        && (gameRef.gameState != 'YOU WIN' && gameRef.gameState != 'GAME OVER')
+      gameRef.enemyState == EnemyState.IDLE
+        && (gameRef.gameState != GameState.YOU_WIN && gameRef.gameState != GameState.GAME_OVER)
     ) {
       if (gameRef.playerEnergy > 0) {
         FlameAudio.play(Globals.pianoNoteMapping[gameRef.enemyMove]!);

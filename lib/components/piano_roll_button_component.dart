@@ -3,8 +3,8 @@ import 'package:flame/experimental.dart';
 import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart' show Canvas, Colors, Paint, Rect, TextStyle;
 import 'package:the_last_tone/constants/globals.dart';
+import 'package:the_last_tone/constants/states.dart';
 import 'package:the_last_tone/games/the_last_tone_game.dart';
-import 'package:the_last_tone/utils/helpers.dart';
 
 class PianoRollButtonComponent extends Component with TapCallbacks, HasGameRef<TheLastToneGame> {
   late Rect shape;
@@ -71,8 +71,8 @@ class PianoRollButtonComponent extends Component with TapCallbacks, HasGameRef<T
   @override
   void onTapDown(TapDownEvent event) {
     if (
-      gameRef.playerState == 'WAITING'
-        && (gameRef.gameState != 'YOU WIN' && gameRef.gameState != 'GAME OVER')
+      gameRef.playerState == PlayerState.WAITING
+        && (gameRef.gameState != GameState.YOU_WIN && gameRef.gameState != GameState.GAME_OVER)
     ) {
       if (isActive && gameRef.playerEnergy > 0) {
         FlameAudio.play(Globals.pianoNoteMapping[option]!);

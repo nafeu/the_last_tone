@@ -32,14 +32,5 @@ class GameStatusComponent extends Component with HasGameRef<TheLastToneGame> {
   }
 
   @override
-  void render(Canvas canvas) {
-    paint.color = Colors.purple;
-    canvas.drawRect(rect, paint);
-    textPaint.render(
-      canvas, 
-      gameRef.gameState, 
-      Vector2(x + width / 2, y + height / 2), 
-      anchor: Anchor.center
-    );
-  }
+  void render(Canvas canvas) {}
 }

@@ -6,56 +6,59 @@ import 'package:the_last_tone/components/background_component.dart';
 import 'package:the_last_tone/components/button_manager_component.dart';
 import 'package:the_last_tone/components/enemy_component.dart';
 import 'package:the_last_tone/components/game_status_component.dart';
+import 'package:the_last_tone/components/piano_roll_button_manager_component.dart';
 import 'package:the_last_tone/components/player_component.dart';
 import 'package:the_last_tone/constants/globals.dart';
-
-import '../components/piano_roll_button_manager_component.dart';
+import 'package:the_last_tone/constants/states.dart';
 
 class TheLastToneGame extends FlameGame with HasTappableComponents {
-  String gameState = 'ACTIVE';
+  GameState gameState = GameState.ACTIVE;
   Timer gameStateTimer = Timer(Duration(seconds: 0), (){});
 
-  String playerState = 'IDLE';
+  PlayerState playerState = PlayerState.IDLE;
   Timer playerStateTimer = Timer(Duration(seconds: 0), (){});
   String playerMove = '';
   int playerHealth = 3;
   int playerEnergy = 3;
 
-  String enemyState = 'WAITING';
+  EnemyState enemyState = EnemyState.WAITING;
   Timer enemyStateTimer = Timer(Duration(seconds: 0), (){});
   String enemyMove = '';
   int enemyHealth = 3;
 
-  String buttonManagerState = 'EMPTY';
+  ButtonManagerState buttonManagerState = ButtonManagerState.EMPTY;
   Timer buttonManagerStateTimer = Timer(Duration(seconds: 0), (){});
 
-  String pianoRollButtonManagerState = 'ACTIVATE_RANDOM_BUTTON';
+  PianoRollButtonManagerState pianoRollButtonManagerState = PianoRollButtonManagerState.ACTIVATE_RANDOM_BUTTON;
   Timer pianoRollButtonManagerStateTimer = Timer(Duration(seconds: 0), (){});
 
   List<String> options = ['?', '?', '?', '?'];
 
   void handleButtonClick(String text) {
     playerMove = text;
-    playerState = 'PLAYED_MOVE';
-    buttonManagerState = 'GENERATE_ANSWERS';
+    playerState = PlayerState.PLAYED_MOVE;
+    buttonManagerState = ButtonManagerState.GENERATE_ANSWERS;
   }
 
   void updateGameState() {
-    if (gameState == 'ACTIVE') {
-      if (playerState == 'DEAD') {
-        gameState = 'GAME OVER';
-      } else if (enemyState == 'DEAD') {
-        gameState = 'YOU WIN';
+    if (gameState == GameState.ACTIVE) {
+      if (playerState == PlayerState.DEAD) {
+        gameState = GameState.GAME_OVER;
+      } else if (enemyState == EnemyState.DEAD) {
+        gameState = GameState.YOU_WIN;
       }
     }
   }
 
-  void setGameStateIn(int seconds, String newState, String transitionState) {
+  void setGameStateIn(
+    int seconds,
+    GameState newState,
+    GameState transitionState
+  ) {
     gameStateTimer.cancel();
     gameStateTimer = Timer(
       Duration(seconds: seconds),
       () {
-        print('GAME STATE FROM [$gameState] -> [$newState]');
         gameState = newState;
       }
     );
@@ -63,8 +66,8 @@ class TheLastToneGame extends FlameGame with HasTappableComponents {
 
   void setPlayerStateIn(
     int seconds,
-    String newState,
-    String transitionState,
+    PlayerState newState,
+    PlayerState transitionState,
     [Function? callback]
   ) {
     playerState = transitionState;
@@ -72,7 +75,6 @@ class TheLastToneGame extends FlameGame with HasTappableComponents {
     playerStateTimer = Timer(
       Duration(seconds: seconds),
       () {
-        print('PLAYER STATE FROM [$playerState] -> [$newState]');
         playerState = newState;
         if (callback != null) {
           callback();
@@ -83,8 +85,8 @@ class TheLastToneGame extends FlameGame with HasTappableComponents {
 
   void setEnemyStateIn(
     int seconds,
-    String newState,
-    String transitionState,
+    EnemyState newState,
+    EnemyState transitionState,
     [Function? callback]
   ) {
     enemyState = transitionState;
@@ -92,7 +94,6 @@ class TheLastToneGame extends FlameGame with HasTappableComponents {
     enemyStateTimer = Timer(
       Duration(seconds: seconds),
       () {
-        print('ENEMY STATE FROM [$enemyState] -> [$newState]');
         enemyState = newState;
         if (callback != null) {
           callback();
@@ -103,8 +104,8 @@ class TheLastToneGame extends FlameGame with HasTappableComponents {
 
   void setButtonManagerStateIn(
     int seconds,
-    String newState,
-    String transitionState,
+    ButtonManagerState newState,
+    ButtonManagerState transitionState,
     [Function? callback]
   ) {
     buttonManagerState = transitionState;
@@ -112,7 +113,6 @@ class TheLastToneGame extends FlameGame with HasTappableComponents {
     buttonManagerStateTimer = Timer(
       Duration(seconds: seconds),
       () {
-        print('BUTTON MANAGER STATE FROM [$buttonManagerState] -> [$newState]');
         buttonManagerState = newState;
         if (callback != null) {
           callback();
@@ -123,8 +123,8 @@ class TheLastToneGame extends FlameGame with HasTappableComponents {
 
   void setPianoRollButtonManagerStateIn(
     int seconds,
-    String newState,
-    String transitionState,
+    PianoRollButtonManagerState newState,
+    PianoRollButtonManagerState transitionState,
     [Function? callback]
   ) {
     pianoRollButtonManagerState = transitionState;
@@ -132,7 +132,6 @@ class TheLastToneGame extends FlameGame with HasTappableComponents {
     pianoRollButtonManagerStateTimer = Timer(
       Duration(seconds: seconds),
       () {
-        print('BUTTON MANAGER STATE FROM [$pianoRollButtonManagerState] -> [$newState]');
         pianoRollButtonManagerState = newState;
         if (callback != null) {
           callback();

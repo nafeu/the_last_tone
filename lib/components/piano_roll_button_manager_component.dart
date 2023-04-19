@@ -1,6 +1,7 @@
 import 'package:flame/components.dart';
 import 'package:the_last_tone/components/piano_roll_button_component.dart';
 import 'package:the_last_tone/constants/globals.dart';
+import 'package:the_last_tone/constants/states.dart';
 import 'package:the_last_tone/games/the_last_tone_game.dart';
 import 'package:the_last_tone/utils/helpers.dart';
 
@@ -28,9 +29,9 @@ class PianoRollButtonManagerComponent extends Component with HasGameRef<TheLastT
   }
 
   void updatePianoRollButtonManagerState() {
-    if (gameRef.pianoRollButtonManagerState == 'ACTIVATE_RANDOM_BUTTON') {
+    if (gameRef.pianoRollButtonManagerState == PianoRollButtonManagerState.ACTIVATE_RANDOM_BUTTON) {
       activateRandomButton();
-      gameRef.setPianoRollButtonManagerStateIn(1, 'ACTIVATING', 'IDLE');
+      gameRef.setPianoRollButtonManagerStateIn(1, PianoRollButtonManagerState.ACTIVATING, PianoRollButtonManagerState.IDLE);
     }
   }
 
@@ -74,7 +75,7 @@ class PianoRollButtonManagerComponent extends Component with HasGameRef<TheLastT
   @override
   void update(double dt) {
     super.update(dt);
-    if (gameRef.gameState != 'GAME OVER' && gameRef.gameState != 'YOU WIN') {
+    if (gameRef.gameState != GameState.GAME_OVER && gameRef.gameState != GameState.YOU_WIN) {
       updatePianoRollButtonManagerState();
     }
   }

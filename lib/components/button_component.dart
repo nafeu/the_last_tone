@@ -3,6 +3,7 @@ import 'package:flame/experimental.dart';
 import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart' show Canvas, Colors, Paint, Rect, TextStyle;
 import 'package:the_last_tone/constants/globals.dart';
+import 'package:the_last_tone/constants/states.dart';
 import 'package:the_last_tone/games/the_last_tone_game.dart';
 import 'package:the_last_tone/utils/helpers.dart';
 
@@ -31,9 +32,9 @@ class ButtonComponent extends Component with TapCallbacks, HasGameRef<TheLastTon
   }
 
   ButtonComponent(
-    this.x, 
-    this.y, 
-    this.width, 
+    this.x,
+    this.y,
+    this.width,
     this.height,
     this.option
   );
@@ -41,7 +42,7 @@ class ButtonComponent extends Component with TapCallbacks, HasGameRef<TheLastTon
   @override
   Future<void> onLoad() async {
     await super.onLoad();
-    
+
     shape = Rect.fromLTWH(x, y, width, height);
   }
 
@@ -57,8 +58,8 @@ class ButtonComponent extends Component with TapCallbacks, HasGameRef<TheLastTon
   @override
   void onTapDown(TapDownEvent event) {
     if (
-      gameRef.playerState == 'WAITING' 
-        && (gameRef.gameState != 'YOU WIN' && gameRef.gameState != 'GAME OVER')
+      gameRef.playerState == PlayerState.WAITING
+        && (gameRef.gameState != GameState.YOU_WIN && gameRef.gameState != GameState.GAME_OVER)
     ) {
       gameRef.handleButtonClick(option);
 
@@ -70,7 +71,7 @@ class ButtonComponent extends Component with TapCallbacks, HasGameRef<TheLastTon
   void render(Canvas canvas) {
     fill.color = _isPressed? Colors.red : Colors.white;
     canvas.drawRect(shape, fill);
-    if (gameRef.enemyState != 'IDLE') {
+    if (gameRef.enemyState != EnemyState.IDLE) {
       textPaint.render(canvas, '?', Vector2(x + width / 2, y + height / 2), anchor: Anchor.center);
     } else {
       textPaint.render(canvas, option, Vector2(x + width / 2, y + height / 2), anchor: Anchor.center);
